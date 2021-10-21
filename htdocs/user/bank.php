@@ -1,12 +1,12 @@
 <?php
-/* Copyright (C) 2002-2004 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2003      Jean-Louis Bergamo   <jlb@j1b.org>
- * Copyright (C) 2004-2015 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2009 Regis Houssin        <regis.houssin@inodbox.com>
- * Copyright (C) 2013      Peter Fontaine       <contact@peterfontaine.fr>
- * Copyright (C) 2015-2016 Marcos García        <marcosgdf@gmail.com>
- * Copyright (C) 2015	   Alexandre Spangaro	<aspangaro@open-dsi.fr>
- * Copyright (C) 2021		Gauthier VERDOL         <gauthier.verdol@atm-consulting.fr>
+/* Copyright (C) 2002-2004  Rodolphe Quiedeville <rodolphe@quiedeville.org>
+ * Copyright (C) 2003       Jean-Louis Bergamo   <jlb@j1b.org>
+ * Copyright (C) 2004-2015  Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2009  Regis Houssin        <regis.houssin@inodbox.com>
+ * Copyright (C) 2013       Peter Fontaine       <contact@peterfontaine.fr>
+ * Copyright (C) 2015-2016  Marcos García        <marcosgdf@gmail.com>
+ * Copyright (C) 2015       Alexandre Spangaro   <aspangaro@open-dsi.fr>
+ * Copyright (C) 2021       Gauthier VERDOL      <gauthier.verdol@atm-consulting.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -324,7 +324,8 @@ if ($action != 'edit' && $action != 'create') {		// If not bank account yet, $ac
 			$ret .= '</form>';
 			print $ret;
 		} else {
-			print dol_getIdFromCode($db, $object->default_c_exp_tax_cat, 'c_exp_tax_cat', 'rowid', 'label');
+			$label_exp_tax_cat = dol_getIdFromCode($db, $object->default_c_exp_tax_cat, 'c_exp_tax_cat', 'rowid', 'label');
+			print $langs->trans($label_exp_tax_cat);
 			//print $form->editfieldval("DefaultCategoryCar", 'default_c_exp_tax_cat', $object->default_c_exp_tax_cat, $object, $user->rights->user->user->creer, 'string', ($object->default_c_exp_tax_cat != '' ? $object->default_c_exp_tax_cat : ''));
 		}
 		print '</td>';
@@ -339,7 +340,10 @@ if ($action != 'edit' && $action != 'create') {		// If not bank account yet, $ac
 			$ret .= '<input type="hidden" name="action" value="setdefault_range">';
 			$ret .= '<input type="hidden" name="token" value="'.newToken().'">';
 			$ret .= '<input type="hidden" name="id" value="'.$object->id.'">';
-			$maxRangeNum = ExpenseReportIk::getMaxRangeNumber($object->default_c_exp_tax_cat);
+
+			$expensereportik = new ExpenseReportIk($db);
+			$maxRangeNum = $expensereportik->getMaxRangeNumber($object->default_c_exp_tax_cat);
+
 			$ret .= $form->selectarray('default_range', range(0, $maxRangeNum), $object->default_range);
 			$ret .= '<input type="submit" class="button" name="modify" value="'.$langs->trans("Modify").'"> ';
 			$ret .= '<input type="submit" class="button button-cancel" name="cancel" value="'.$langs->trans("Cancel").'">';
@@ -356,7 +360,7 @@ if ($action != 'edit' && $action != 'create') {		// If not bank account yet, $ac
 
 	print '</div><div class="fichehalfright"><div class="ficheaddleft">';
 
-	// Nbre max d'elements des petites listes
+	// Max number of elements in small lists
 	$MAXLIST = $conf->global->MAIN_SIZE_SHORTLIST_LIMIT;
 
 	// Latest payments of salaries
@@ -609,7 +613,7 @@ if ($action != 'edit' && $action != 'create') {		// If not bank account yet, $ac
 		// Edit/Delete
 		print '<td class="right nowraponall">';
 		if ($permissiontoaddbankaccount) {
-			print '<a class="editfielda" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&bankid='.$account->id.'&action=edit">';
+			print '<a class="editfielda" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&bankid='.$account->id.'&action=edit&token='.newToken().'">';
 			print img_picto($langs->trans("Modify"), 'edit');
 			print '</a>';
 		}

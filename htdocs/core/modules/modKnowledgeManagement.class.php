@@ -68,7 +68,7 @@ class modKnowledgeManagement extends DolibarrModules
 		$this->descriptionlong = "Manage a Knowledge Management (KM) or Help-Desk base";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-		$this->version = 'experimental';
+		$this->version = 'dolibarr';
 		// Url to the file with your last numberversion of this module
 		//$this->url_last_version = 'http://www.example.com/versionmodule.txt';
 
@@ -361,6 +361,19 @@ class modKnowledgeManagement extends DolibarrModules
 			'target'=>'',
 			// 0=Menu for internal users, 1=external users, 2=both
 			'user'=>2
+		);
+		$this->menu[$r++] = array(
+			'fk_menu' => 'fk_mainmenu=ticket,fk_leftmenu=knowledgemanagement_knowledgerecord',
+			'type' => 'left',
+			'titre' => 'Categories',
+			'mainmenu' => 'ticket',
+			'url' => '/categories/index.php?type=13',
+			'langs' => 'knowledgemanagement',
+			'position' => 112,
+			'enabled' => '$conf->knowledgemanagement->enabled',
+			'perms' => '$user->rights->knowledgemanagement->knowledgerecord->read',
+			'target' => '',
+			'user' => 0
 		);
 
 		/* END MODULEBUILDER LEFTMENU KNOWLEDGERECORD */
